@@ -1,4 +1,4 @@
-# skill-text-rbnx
+# skill-write_text-rbnx
 
 Robonix **skill** that converts Chinese/English text into pen-up/down
 waypoints and executes them through the plotter primitive. It owns
@@ -68,7 +68,7 @@ call.
 ## Layout
 
 ```text
-skill-text-rbnx/
+skill-write_text-rbnx/
 ├── package_manifest.yaml
 ├── capabilities/
 │   ├── text_driver.v1.toml
