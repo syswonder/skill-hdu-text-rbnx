@@ -1,0 +1,15 @@
+# Report the machine geometry declared by this primitive's deployment
+# config: the drawable area in the paper frame (mm) and the two pen
+# heights (mm). Static per machine; changes only with the config.
+#
+# The status contract is a topic_out stream and is not consumable as a
+# request/response RPC, so consumers read geometry here instead.
+---
+bool    success
+string  message
+float64 x_min
+float64 x_max
+float64 y_min
+float64 y_max
+float64 z_up
+float64 z_down

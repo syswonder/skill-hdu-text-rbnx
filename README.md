@@ -1,11 +1,11 @@
-# skill-hdu-text-rbnx
+# skill-text-rbnx
 
 Robonix **skill** that converts Chinese/English text into pen-up/down
 waypoints and executes them through the plotter primitive. It owns
 `robonix/skill/text/*`. Drawing, prompt-to-image, and image tracing live in
-[`skill-hdu-draw-rbnx`](../skill-hdu-draw-rbnx).
+[`skill-draw-rbnx`](../skill-draw-rbnx).
 
-Catalog name: `robonix.skill.xyz.text`.
+Catalog name: `robonix.skill.write_text`.
 
 The skill never talks TCP or PLC. It resolves
 `robonix/primitive/plotter/{trajectory,home}` through Atlas and sends
@@ -59,8 +59,7 @@ call.
 
 ## Driver-init lifecycle
 
-`scripts/start.sh` exports `ROBONIX_XYZ_SDK` and execs
-`python3 -m xyz_text.main`.
+`scripts/start.sh` execs `python3 -m xyz_text.main`.
 
 1. `CMD_INIT`: parse and validate config only; no primitive connection.
 2. `CMD_ACTIVATE`: resolve the two primitive contracts through Atlas.
@@ -69,7 +68,7 @@ call.
 ## Layout
 
 ```text
-skill-hdu-text-rbnx/
+skill-text-rbnx/
 ├── package_manifest.yaml
 ├── capabilities/
 │   ├── text_driver.v1.toml
@@ -81,7 +80,7 @@ skill-hdu-text-rbnx/
 │   ├── text.py                          # Workspace/TextOptions → waypoints
 │   ├── plan.py                          # dedupe, validation, bounds
 │   ├── primitive_client.py              # Atlas discovery + gRPC calls
-│   └── sdk_path.py                      # locates the repository SDK
+│   └── geometry/                        # vendored font + layout (text, hershey_simplex, hanzi_data)
 ├── scripts/{build,start}.sh
 ├── tests/{test_text,test_plan}.py
 ├── config.spec
@@ -100,13 +99,9 @@ Deployment config lives in the `xyz_text` skill `config` block of
 constraints are in [`config.spec`](config.spec).
 
 ```yaml
-workspace:
-  x_min: 0.0
-  x_max: 180.0
-  y_min: 0.0
-  y_max: 150.0
-  z_up: -46.0          # pen-up height
-  z_down: -50.0        # pen-down height
+# Drawable area and pen heights are NOT configured here. They are read
+# from the primitive's `geometry` contract on activation, so this skill
+# carries no machine-specific numbers and works on any sized rig.
 font_size_mm: 10.0     # cap height
 line_spacing: 1.5      # baseline-to-baseline = font_size_mm * line_spacing
 letter_spacing_mm: 0.5
@@ -129,9 +124,9 @@ survive every write.
 ## Coordinates and pen heights
 
 - Units: millimetres; paper origin at the lower-left, +X right, +Y up.
-- Machine zero `(0,0,0)` is 50 mm above the paper's lower-left corner.
-- Paper surface and pen-down are `z=-50`; pen-up is `z=-46`.
-- Travel: 180 mm × 150 mm.
+- The drawable area (`x_max`/`y_max`) and pen heights (`z_up`/`z_down`) are
+  reported by the plotter primitive's `PlotterStatus` on activation; this
+  skill hardcodes none of them.
 - The skill encodes `z_up` / `z_down` into every waypoint; the PLC uses the
   per-point `z`.
 

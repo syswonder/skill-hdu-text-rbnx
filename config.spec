@@ -8,17 +8,10 @@
 # Everything is millimetres, matching the SDK and the PLC.
 
 config:
-  # Workspace in machine millimetres (paper frame).
-  # Machine zero (0,0,0) is 50 mm above the paper's lower-left corner, so
-  # the paper surface and pen-down height are z = -50.
-  workspace:
-    x_min: 0.0
-    x_max: 180.0
-    y_min: 0.0
-    y_max: 150.0
-    # Pen heights. Must satisfy -50 <= z_down < z_up <= 0.
-    z_up: -46.0
-    z_down: -50.0
+  # Workspace geometry (drawable area + pen heights) is authoritative in the
+  # plotter primitive and is read from its `geometry` contract on activation.
+  # It is NOT configured here; a `workspace:` mapping in config is only a
+  # fallback used when that contract is unreachable (the skill logs an error).
 
   # ── write_text defaults ────────────────────────────────────────────
   # float mm > 0, default: 10.0. Cap height of the text.

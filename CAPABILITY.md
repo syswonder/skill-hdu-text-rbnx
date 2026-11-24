@@ -46,7 +46,6 @@ persists across every write.
 ## Coordinates
 
 - Units: millimetres; paper origin at the lower-left, +X right, +Y up.
-- Work area: 180 mm × 150 mm.
-- Machine zero `(0, 0, 0)` is 50 mm above the paper; paper surface `z = -50`,
-  pen-up `z = -46`.
+- Drawable area and pen heights are reported by the `geometry` contract on
+  activation; this skill hardcodes none of them.
 - Out-of-bounds plans return `success=false` before any motion.

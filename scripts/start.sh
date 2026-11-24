@@ -23,19 +23,4 @@ if ROBONIX_API="$(rbnx path robonix-api 2>/dev/null)"; then
     export PYTHONPATH="$ROBONIX_API:$PYTHONPATH"
 fi
 
-# Text fonts come from the repository SDK. Export it so the process works
-# regardless of the current directory.
-if [[ -z "${ROBONIX_XYZ_SDK:-}" ]]; then
-    SDK_ROOT="$PKG/../../../SDK"
-    if [[ -f "$SDK_ROOT/robonix_sdk/text.py" ]]; then
-        export ROBONIX_XYZ_SDK="$(cd "$SDK_ROOT" && pwd)"
-    fi
-fi
-if [[ -n "${ROBONIX_XYZ_SDK:-}" ]]; then
-    echo "[xyz_text/start] SDK: $ROBONIX_XYZ_SDK"
-else
-    echo "[xyz_text/start] ERR: Robonix XYZ SDK not found; set ROBONIX_XYZ_SDK" >&2
-    exit 2
-fi
-
 exec "$PY" -u -m xyz_text.main

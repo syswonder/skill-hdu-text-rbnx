@@ -1,0 +1,10 @@
+# Codegen mirror of the upstream plotter primitive geometry contract.
+# Consumed, not provided - see trajectory.v1.toml for the rationale.
+[contract]
+id      = "robonix/primitive/plotter/geometry"
+version = "1"
+kind    = "primitive"
+idl     = "plotter/srv/Geometry.srv"
+
+[mode]
+type = "rpc"

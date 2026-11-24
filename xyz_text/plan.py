@@ -15,8 +15,9 @@ before a hardware call:
   * enforce ``max_points``;
   * compute the bounding box returned by the MCP tools.
 
-Units are millimetres throughout. The paper frame is 0..180 mm in X,
-0..150 mm in Y, with the paper surface at z = -50.
+Units are millimetres throughout. The drawable area and pen heights are
+provided by the plotter primitive; this module holds no machine-specific
+numbers.
 """
 from __future__ import annotations
 
@@ -33,11 +34,11 @@ class PlanError(Exception):
 @dataclass(frozen=True)
 class Workspace:
     x_min: float = 0.0
-    x_max: float = 180.0
+    x_max: float = 0.0
     y_min: float = 0.0
-    y_max: float = 150.0
-    z_up: float = -46.0
-    z_down: float = -50.0
+    y_max: float = 0.0
+    z_up: float = 0.0
+    z_down: float = 0.0
 
     def validate(self) -> None:
         values = (
@@ -57,11 +58,6 @@ class Workspace:
         if self.z_up <= self.z_down:
             raise PlanError(
                 f"workspace z_up ({self.z_up}) must be > z_down ({self.z_down})"
-            )
-        if not (-50.0 <= self.z_down < self.z_up <= 0.0):
-            raise PlanError(
-                "pen heights must satisfy -50 <= z_down < z_up <= 0, got "
-                f"z_down={self.z_down}, z_up={self.z_up}"
             )
 
     def contains(self, x: float, y: float) -> bool:

@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: MIT
 """Atlas discovery + gRPC calls to the plotter primitive.
 
-The text skill never touches PLC sockets. It resolves the primitive
-contracts through Atlas, then calls the generated gRPC stubs:
+The text skill never touches PLC sockets. It resolves the three primitive contracts through Atlas, then calls the generated gRPC stubs:
 
     robonix/primitive/plotter/trajectory
     robonix/primitive/plotter/home
+    robonix/primitive/plotter/geometry
 
 The mirrored contract files under ``capabilities/primitive/plotter``
 exist only so codegen emits these stubs. They are not declared as
@@ -29,6 +29,7 @@ from robonix_api.atlas_types import GrpcParams, Transport
 REQUIRED_CONTRACTS = {
     "trajectory": "robonix/primitive/plotter/trajectory",
     "home": "robonix/primitive/plotter/home",
+    "geometry": "robonix/primitive/plotter/geometry",
 }
 
 
@@ -45,6 +46,18 @@ class Binding:
     endpoint: str
     service_name: str
     method: str
+
+
+@dataclass(frozen=True)
+class Geometry:
+    """Authoritative machine geometry reported by the plotter primitive."""
+
+    x_min: float
+    x_max: float
+    y_min: float
+    y_max: float
+    z_up: float
+    z_down: float
 
 
 @lru_cache(maxsize=None)
@@ -215,6 +228,34 @@ class PrimitiveClient:
             return self._rpc("home")(pb2.Home_Request(), timeout=self._timeout(timeout_s))
         except grpc.RpcError as exc:
             raise PrimitiveCallError(f"home call failed: {_rpc_error(exc)}") from exc
+
+    def get_geometry(self, *, timeout_s: float | None = None) -> Geometry:
+        """Read the machine geometry once: drawable area + pen heights.
+
+        Static configuration, not feedback: the PLC has no readback, so
+        this only differs between machines when the primitive config does.
+        """
+        pb2 = _pb2()
+        try:
+            response = self._rpc("geometry")(
+                pb2.Geometry_Request(), timeout=self._timeout(timeout_s)
+            )
+        except grpc.RpcError as exc:
+            raise PrimitiveCallError(
+                f"geometry call failed: {_rpc_error(exc)}"
+            ) from exc
+        if not response.success:
+            raise PrimitiveCallError(
+                f"geometry call rejected: {response.message or 'unknown error'}"
+            )
+        return Geometry(
+            x_min=float(response.x_min),
+            x_max=float(response.x_max),
+            y_min=float(response.y_min),
+            y_max=float(response.y_max),
+            z_up=float(response.z_up),
+            z_down=float(response.z_down),
+        )
 
     def close(self) -> None:
         with self._lock:

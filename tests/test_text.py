@@ -49,14 +49,10 @@ def test_default_origin_is_top_aligned_and_inside_the_paper():
 
 
 def test_hanzi_are_supported_by_the_sdk_table():
-    from xyz_text.sdk_path import text_module
+    from xyz_text.geometry import hanzi_data
 
-    try:
-        sdk = text_module()
-    except ImportError as exc:
-        pytest.skip(f"SDK dependencies missing: {exc}")
-    if "你" not in sdk.hanzi_data.GLYPHS:
-        pytest.skip("SDK hanzi table does not contain the test character")
+    if "你" not in hanzi_data.GLYPHS:
+        pytest.skip("vendored hanzi table does not contain the test character")
 
     points = _layout("你好", font_size_mm=10.0, origin_y=100.0)
     assert points
