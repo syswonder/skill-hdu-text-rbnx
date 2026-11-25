@@ -8,7 +8,7 @@
 #   * letter_spacing_mm <= 0  -> config
 #   * origin_x <= 0           -> config
 #   * origin_y <= 0           -> config; a configured negative value selects
-#                               the SDK default (text block top-aligned at the
+#                               the default (text block top-aligned at the
 #                               workspace top)
 #
 # MCP dataclasses fill omitted numeric fields with 0, so 0 is the "use the
@@ -20,8 +20,8 @@
 # back to the configured pen heights.
 #
 # Supported characters: ASCII A-Z a-z 0-9, space, newline, and the 3755
-# GB2312 level-1 hanzi shipped with the SDK. Punctuation is not in the
-# single-stroke font and returns success=false.
+# GB2312 level-1 hanzi in the vendored single-stroke font. Punctuation is
+# not in the font and returns success=false.
 #
 # The global motion profile (velocity/acceleration/deceleration/jerk,
 # pen heights) is owned by the plotter primitive and is not a parameter

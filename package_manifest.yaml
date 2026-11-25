@@ -3,7 +3,7 @@ manifestVersion: 1
 package:
   name: robonix.skill.write_text
   version: 0.1.0
-  description: XYZ 三轴写字机文本技能 — 基于 vendored 单笔画字体的中英文书写。
+  description: Write text on a 3-axis Cartesian plotter using stroke-based fonts for Chinese and English.
   tags: [skill, plot, write, text, xyz]
   maintainers:
     - shadosider <1439107161@qq.com>
@@ -13,16 +13,16 @@ package:
 build: bash scripts/build.sh
 start: bash scripts/start.sh
 
-# Package-local contracts: this skill owns only the text surface.
+# Package-local contracts: this skill owns only the write_text surface.
 # The primitive contracts mirrored under capabilities/primitive/ are
 # consumed but NOT listed here — they exist only so rbnx codegen emits
 # the gRPC stubs this skill calls.
 capabilities:
-  - name: robonix/skill/text/driver
+  - name: robonix/skill/write_text/driver
     path: capabilities/driver.v1.toml
     transport: grpc
-  - name: robonix/skill/text/write_text
-    path: capabilities/write_text.v1.toml
+  - name: robonix/skill/write_text/write
+    path: capabilities/write.v1.toml
     transport: mcp
 
 depends: []

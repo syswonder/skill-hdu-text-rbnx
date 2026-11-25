@@ -13,7 +13,7 @@ cd "$PKG"
 
 CLEAN="${RBNX_BUILD_CLEAN:-}"
 if [[ "$CLEAN" == "1" ]]; then
-    echo "[xyz_text/build] clean: removing rbnx-build/"
+    echo "[write_text/build] clean: removing rbnx-build/"
     rm -rf rbnx-build
 fi
 mkdir -p rbnx-build
@@ -28,8 +28,8 @@ export RBNX_CODEGEN_PYTHON="$ROOT/.venv/bin/python"
 FLAGS=(--out-dir "$PKG/rbnx-build/codegen" --mcp)
 [[ "$CLEAN" == "1" ]] && FLAGS+=(--clean)
 
-echo "[xyz_text/build] rbnx codegen ${FLAGS[*]}"
+echo "[write_text/build] rbnx codegen ${FLAGS[*]}"
 rbnx codegen -p "$PKG" "${FLAGS[@]}"
 
 touch "$PKG/rbnx-build/.rbnx-built"
-echo "[xyz_text/build] done."
+echo "[write_text/build] done."

@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 """Atlas discovery + gRPC calls to the plotter primitive.
 
-The text skill never touches PLC sockets. It resolves the three primitive contracts through Atlas, then calls the generated gRPC stubs:
+The text skill never touches PLC sockets. It resolves the three primitive
+contracts through Atlas, then calls the generated gRPC stubs:
 
     robonix/primitive/plotter/trajectory
     robonix/primitive/plotter/home

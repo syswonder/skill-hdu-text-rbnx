@@ -1,5 +1,5 @@
 [contract]
-id      = "robonix/skill/text/write_text"
+id      = "robonix/skill/write_text/write"
 version = "1"
 kind    = "skill"
 idl     = "plot/srv/WriteText.srv"

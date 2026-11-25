@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: MIT
-"""xyz_text — MCP skill for writing text with an XYZ pen plotter.
+"""write_text — MCP skill for writing text with an XYZ pen plotter.
 
-Owns ``robonix/skill/text/*``:
+Owns ``robonix/skill/write_text/*``:
 
-  * ``driver``     shared lifecycle contract for this skill.
-  * ``write_text`` text -> single-stroke layout -> waypoints.
+  * ``driver`` shared lifecycle contract for this skill.
+  * ``write``  text -> single-stroke layout -> waypoints.
 
-The vendored geometry package (``xyz_text/geometry/text.py``) does all
+The vendored geometry package (``write_text/geometry/text.py``) does all
 font work. This module orchestrates the plotter primitive over gRPC; it
 never touches the PLC or the TCP protocol.
 
@@ -30,7 +30,7 @@ from dataclasses import dataclass
 
 from robonix_api import Deferred, Err, Ok, Skill
 
-xyz_text = Skill(id="xyz_text", namespace="robonix/skill/text")
+write_text_skill = Skill(id="write_text", namespace="robonix/skill/write_text")
 
 from plot_mcp import (  # type: ignore  # noqa: E402  (rbnx codegen)
     WriteText_Request,
@@ -51,10 +51,10 @@ from .primitive_client import (  # noqa: E402
 )
 from .text import TextError, TextOptions, layout_text  # noqa: E402
 
-log = logging.getLogger("xyz_text")
+log = logging.getLogger("write_text")
 logging.basicConfig(
     level=logging.INFO,
-    format="[xyz_text] %(levelname)s %(message)s",
+    format="[write_text] %(levelname)s %(message)s",
 )
 # basicConfig is a no-op when the runtime already installed root handlers,
 # so pin this logger's level explicitly to keep job logs visible.
@@ -68,7 +68,7 @@ class SkillConfig:
     line_spacing: float
     letter_spacing_mm: float
     origin_x: float
-    #: Baseline of the first line; negative means "SDK default" (top-aligned).
+    #: Baseline of the first line; negative means "top-aligned" (default).
     origin_y: float
     auto_home: bool
     resolve_timeout_s: float
@@ -211,7 +211,7 @@ def _options_from_request(config: SkillConfig, req) -> TextOptions:
         origin_x = config.origin_x
 
     # Non-positive origin_y means "use config": a configured negative value
-    # selects the SDK default (text block top-aligned at the workspace top).
+    # selects the top-aligned default (text block at the workspace top).
     origin_y_raw = float(req.origin_y)
     if origin_y_raw <= 0.0:
         origin_y = config.origin_y if config.origin_y >= 0.0 else None
@@ -255,12 +255,12 @@ def _write_failure(message: str, started: float) -> WriteText_Response:
 
 
 # ── MCP tools ────────────────────────────────────────────────────────
-@xyz_text.mcp("robonix/skill/text/write_text")
+@write_text_skill.mcp("robonix/skill/write_text/write")
 def write_text(req: WriteText_Request) -> WriteText_Response:
     """Write text on paper with the XYZ pen plotter.
 
     Supports uppercase/lowercase English letters, digits, spaces, newlines,
-    and the 3755 common Chinese characters shipped with the SDK. Punctuation
+    and the 3755 common Chinese characters in the vendored stroke table. Punctuation
     is not supported by the single-stroke font and returns an error. Use
     '\\n' for multiple lines. Sizes and coordinates are millimetres; the
     drawable area and pen heights are provided by the plotter primitive.
@@ -348,13 +348,13 @@ def write_text(req: WriteText_Request) -> WriteText_Response:
 
 
 # ── lifecycle ────────────────────────────────────────────────────────
-@xyz_text.on_init
+@write_text_skill.on_init
 def init(cfg: dict):
     """REGISTERED -> INACTIVE. Parse and validate config only."""
     try:
         config = _parse_config(cfg or {})
     except (TypeError, ValueError, PlanError) as exc:
-        return Err(f"invalid xyz_text config: {exc}")
+        return Err(f"invalid write_text config: {exc}")
 
     _state["config"] = config
     log.info(
@@ -366,7 +366,7 @@ def init(cfg: dict):
     return Ok()
 
 
-@xyz_text.on_activate
+@write_text_skill.on_activate
 def activate():
     """INACTIVE -> ACTIVE. Resolve the plotter primitive endpoints."""
     config = _state["config"]
@@ -375,7 +375,7 @@ def activate():
 
     try:
         bindings = resolve_endpoints(
-            xyz_text, timeout_s=config.resolve_timeout_s
+            write_text_skill, timeout_s=config.resolve_timeout_s
         )
     except PrimitiveDiscoveryError as exc:
         # Stay INACTIVE so the next MCP call retries activation instead of
@@ -428,7 +428,7 @@ def activate():
     return Ok()
 
 
-@xyz_text.on_deactivate
+@write_text_skill.on_deactivate
 def deactivate():
     """ACTIVE -> INACTIVE. Drop the primitive gRPC channels."""
     _state["active"] = False
@@ -439,7 +439,7 @@ def deactivate():
     return Ok()
 
 
-@xyz_text.on_shutdown
+@write_text_skill.on_shutdown
 def shutdown():
     deactivate()
     log.info("shutdown")
@@ -447,7 +447,7 @@ def shutdown():
 
 
 def main() -> int:
-    xyz_text.run()
+    write_text_skill.run()
     return 0
 
 

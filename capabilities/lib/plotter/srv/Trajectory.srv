@@ -4,7 +4,7 @@
 # Absolute mm waypoints executed in order; z selects the pen state. The
 # primitive applies the current global SET_PARAM profile and ACKs after
 # the PLC reports motion done. On failure the gantry is left where it
-# stopped (there is no soft-stop in the SDK protocol).
+# stopped (the PLC protocol has no soft-stop).
 plotter/Waypoint[] waypoints
 ---
 bool    success

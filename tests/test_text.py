@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: MIT
-"""Text adapter tests: SDK Hershey ASCII, hanzi, errors, workspace shift."""
+"""Text adapter tests: Hershey ASCII, hanzi, errors, workspace shift."""
 
 from __future__ import annotations
 
 import pytest
 
-from xyz_text.plan import Workspace
-from xyz_text.text import TextError, TextOptions, layout_text
+from write_text.plan import Workspace
+from write_text.text import TextError, TextOptions, layout_text
 
 
 def _layout(text: str, *, workspace: Workspace | None = None, **kwargs):
@@ -49,7 +49,7 @@ def test_default_origin_is_top_aligned_and_inside_the_paper():
 
 
 def test_hanzi_are_supported_by_the_sdk_table():
-    from xyz_text.geometry import hanzi_data
+    from write_text.geometry import hanzi_data
 
     if "你" not in hanzi_data.GLYPHS:
         pytest.skip("vendored hanzi table does not contain the test character")

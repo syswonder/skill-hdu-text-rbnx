@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
-"""Validate SDK waypoints before they reach the primitive.
+"""Validate laid-out waypoints before they reach the primitive.
 
-The SDK geometry layer already produces pen-up/down waypoints:
+The geometry layer already produces pen-up/down waypoints:
 
     each stroke: (x0, y0, z_up), (x0, y0, z_down), ... , (xlast, ylast, z_up)
 
@@ -101,7 +101,7 @@ def validate_waypoints(
     workspace: Workspace,
     max_points: int = 50000,
 ) -> PlanResult:
-    """Validate SDK waypoints and wrap them in a :class:`PlanResult`.
+    """Validate laid-out waypoints and wrap them in a :class:`PlanResult`.
 
     Raises :class:`PlanError` before any hardware call if a point escapes
     the workspace, Z escapes the pen-height range, the plan is empty, or

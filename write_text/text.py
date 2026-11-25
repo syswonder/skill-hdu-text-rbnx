@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Text layout backed by the vendored geometry package.
 
-The geometry package (``xyz_text/geometry/text.py``) does the real work:
+The geometry package (``write_text/geometry/text.py``) does the real work:
 
     ASCII letters/digits -> Hershey Simplex single-stroke glyphs
     Chinese              -> stroke medians for the 3755 GB2312 level-1 chars
@@ -33,8 +33,8 @@ class TextOptions:
     line_spacing: float = 1.5
     letter_spacing_mm: float = 0.5
     origin_x: float = 5.0
-    #: Baseline of the first line, in machine mm. ``None`` means "use the
-    #: SDK default": the text block's top edge sits at the workspace top.
+    #: Baseline of the first line, in machine mm. ``None`` means "top-aligned
+    #: default": the text block's top edge sits at the workspace top.
     origin_y: float | None = None
     workspace: Workspace = Workspace()
 
@@ -72,7 +72,7 @@ def layout_text(text: str, options: TextOptions) -> list[tuple[float, float, flo
 
     width = workspace.x_max - workspace.x_min
     height = workspace.y_max - workspace.y_min
-    # SDK configuration is 0-based; the workspace may be shifted.
+    # Geometry configuration is 0-based; the workspace may be shifted.
     origin_x = float(options.origin_x) - workspace.x_min
     if not (0.0 <= origin_x <= width):
         raise TextError(

@@ -1,2 +1,2 @@
 # SPDX-License-Identifier: MIT
-"""Tests for the XYZ text skill."""
+"""Tests for the write_text skill."""

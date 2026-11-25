@@ -1,11 +1,11 @@
-# Runtime config accepted by the XYZ text skill.
+# Runtime config accepted by the write_text skill.
 #
 # This file documents the mapping passed as this package's `config:` value in
 # robonix_manifest.yaml. Missing keys use the defaults below. Per-call MCP
 # fields override these values; fields left at 0 / negative fall back to
 # config as documented in each .srv.
 #
-# Everything is millimetres, matching the SDK and the PLC.
+# Everything is millimetres, matching the PLC and the paper frame.
 
 config:
   # Workspace geometry (drawable area + pen heights) is authoritative in the
@@ -27,7 +27,7 @@ config:
   # float mm, default: 5.0. Left edge of the text origin.
   origin_x: 5.0
 
-  # float mm, default: -1.0 (sentinel). Negative means "SDK default":
+  # float mm, default: -1.0 (sentinel). Negative means "top-aligned default":
   # the top edge of the text block sits at the workspace top and lines
   # flow downward. A value >= 0 is the baseline of the first line.
   origin_y: -1.0

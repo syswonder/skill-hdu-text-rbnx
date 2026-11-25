@@ -1,5 +1,5 @@
 [contract]
-id      = "robonix/skill/text/driver"
+id      = "robonix/skill/write_text/driver"
 version = "1"
 kind    = "skill"
 idl     = "lifecycle/srv/Driver.srv"

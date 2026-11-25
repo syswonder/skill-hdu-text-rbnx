@@ -7,7 +7,7 @@ import math
 
 import pytest
 
-from xyz_text.plan import (
+from write_text.plan import (
     PlanError,
     Workspace,
     dedupe,

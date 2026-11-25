@@ -7,14 +7,14 @@ PY="$ROOT/.venv/bin/python"
 cd "$PKG"
 
 if [[ ! -x "$PY" ]]; then
-    echo "[xyz_text/start] ERR: missing $PY — run rbnx build" >&2
+    echo "[write_text/start] ERR: missing $PY — run rbnx build" >&2
     exit 2
 fi
 
 CODEGEN_PROTO="$PKG/rbnx-build/codegen/proto_gen"
 CODEGEN_MCP="$PKG/rbnx-build/codegen/robonix_mcp_types"
 if [[ ! -d "$CODEGEN_PROTO" || ! -d "$CODEGEN_MCP" ]]; then
-    echo "[xyz_text/start] ERR: codegen output missing — run scripts/build.sh" >&2
+    echo "[write_text/start] ERR: codegen output missing — run scripts/build.sh" >&2
     exit 2
 fi
 
@@ -23,4 +23,4 @@ if ROBONIX_API="$(rbnx path robonix-api 2>/dev/null)"; then
     export PYTHONPATH="$ROBONIX_API:$PYTHONPATH"
 fi
 
-exec "$PY" -u -m xyz_text.main
+exec "$PY" -u -m write_text.main
