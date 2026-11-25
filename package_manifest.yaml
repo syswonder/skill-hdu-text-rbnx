@@ -19,6 +19,10 @@ start: bash scripts/start.sh
 # the gRPC stubs this skill calls.
 capabilities:
   - name: robonix/skill/text/driver
+    path: capabilities/driver.v1.toml
+    transport: grpc
   - name: robonix/skill/text/write_text
+    path: capabilities/write_text.v1.toml
+    transport: mcp
 
 depends: []
